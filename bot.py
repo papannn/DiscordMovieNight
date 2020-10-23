@@ -74,9 +74,11 @@ async def on_message(message):
         user_movie_watcher = filter_user_with_movie_watcher_role(message.guild.members, mention_person)
         
         guild_id = message.guild.id
+        channel_id = message.channel.id
         server_active[guild_id] = {
             'total_points': 0,
-            'total_voters:': 0
+            'total_voters:': 0,
+            'channel_id': channel_id
         }
         add_members_to_active_state(user_movie_watcher, guild_id, users_active)
         await message.channel.send("Attention Movie Watcher, please check your personal messages")
@@ -85,6 +87,13 @@ async def on_message(message):
 @client.event
 async def on_reaction_add(reaction, user):
     if client.user != user:
+        if users_active.get(user.id, None) is None:
+            await user.send("Sorry, the voting has ended")
+            return
+        
+        server_id = users_active[user.id]['server_active_list'][0]
+        channel_id = server_active[server_id]['channel_id']
+        channel = client.get_channel(channel_id)
         await user.send("Thank you for voting")
-
+        await channel.send("%s has voted" % (user.name))
 client.run(TOKEN)
