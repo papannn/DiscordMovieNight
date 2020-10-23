@@ -84,6 +84,9 @@ async def on_message(message):
         await message.channel.send("Attention Movie Watcher, please check your personal messages")
         await pm_all_user(user_movie_watcher)
 
+def reaction_to_int(reaction) -> int:
+    return EMOJI_LIST.index(str(reaction))
+
 @client.event
 async def on_reaction_add(reaction, user):
     if client.user != user:
@@ -99,6 +102,7 @@ async def on_reaction_add(reaction, user):
         channel_id = server_active[server_id]['channel_id']
         channel = client.get_channel(channel_id)
         server_active[server_id]['total_voters'] += 1
+        server_active[server_id]['total_points'] += reaction_to_int(reaction)
         
         server_voting_dict = server_active[server_id]
         server_active_list.pop(0)
