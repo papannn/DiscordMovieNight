@@ -15,6 +15,20 @@ def check_roles(user_roles: list) -> bool:
             return True
     return False
 
+def filter_user_with_movie_watcher_role(user_list, mention_person):
+    users = []
+    for user in user_list:
+        if user == mention_person:
+            continue
+        for role in user.roles:
+            if role.name == 'Movie Watcher':
+                users.append(user)
+    return users
+
+async def pm_all_user(user_list):
+    for user in user_list:
+        await user.send("How's the movie? Gimme score from 1 to 10")
+
 @client.event
 async def on_ready():
     print(f'{client.user} has connected to Discord!')
@@ -39,5 +53,9 @@ async def on_message(message):
         if not check_roles(user_roles):
             await message.channel.send("This person doesn't have \"Movie Watcher\" role")
             return
-        
+
+        user_movie_watcher = filter_user_with_movie_watcher_role(message.guild.members, mention_person)
+        await message.channel.send("Attention Movie Watcher, please check your personal messages")
+        await pm_all_user(user_movie_watcher)
+
 client.run(TOKEN)
