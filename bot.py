@@ -99,9 +99,16 @@ async def on_message(message):
         guild_id = message.guild.id
         if server_active.get(guild_id, None) is None:
             await message.channel.send("There's no active voting")
+            return
         await message.channel.send("Calculating point...")
         voting_stats = server_active[guild_id]
-        final_point = voting_stats['total_points'] / voting_stats['total_voters']
+        try:
+            final_point = voting_stats['total_points'] / voting_stats['total_voters']
+        except ZeroDivisionError:
+            await message.channel.send("Eh?")
+            await message.channel.send("Nobody voted yet?")
+            final_point = 0
+
         
         await message.channel.send("%s Points!!!" % final_point)
         if final_point > 7.5:
