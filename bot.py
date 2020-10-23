@@ -11,6 +11,7 @@ client = discord.Client(intents=intents)
 
 server_active = {}
 users_active = {}
+EMOJI_LIST = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
 
 def check_roles(user_roles: list) -> bool:
     for role in user_roles:
@@ -31,16 +32,8 @@ def filter_user_with_movie_watcher_role(user_list, mention_person):
 async def pm_all_user(user_list):
     for user in user_list:
         movie_score = await user.send("How's the movie? Gimme score from 1 to 10")
-        await movie_score.add_reaction("1️⃣")
-        await movie_score.add_reaction("2️⃣")
-        await movie_score.add_reaction("3️⃣")
-        await movie_score.add_reaction("4️⃣")
-        await movie_score.add_reaction("5️⃣")
-        await movie_score.add_reaction("6️⃣")
-        await movie_score.add_reaction("7️⃣")
-        await movie_score.add_reaction("8️⃣")
-        await movie_score.add_reaction("9️⃣")
-        await movie_score.add_reaction("🔟")
+        for EMOJI in EMOJI_LIST:
+            await movie_score.add_reaction(EMOJI)
 
 def add_members_to_active_state(user_list, guild_id, users_active):
     for user in user_list:
