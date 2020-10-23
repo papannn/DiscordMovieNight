@@ -78,11 +78,27 @@ async def on_message(message):
         server_active[guild_id] = {
             'total_points': 0,
             'total_voters': 0,
-            'channel_id': channel_id
+            'channel_id': channel_id,
+            'user_list': user_movie_watcher,
+            'mention_person': mention_person
         }
         add_members_to_active_state(user_movie_watcher, guild_id, users_active)
         await message.channel.send("Attention Movie Watcher, please check your personal messages")
         await pm_all_user(user_movie_watcher)
+    
+    if content == '!friday close':
+        guild_id = message.guild.id
+        if server_active.get(guild_id, None) is None:
+            await message.channel.send("There's no active voting")
+        await message.channel.send("Calculating point...")
+        voting_stats = server_active[guild_id]
+        final_point = voting_stats['total_points'] / voting_stats['total_voters']
+        
+        await message.channel.send("Point %s!!!" % final_point)
+        if final_point > 7.5:
+            await message.channel.send("Congratulation!")
+        else:
+            await message.channel.send("Better luck next time :(")
 
 def reaction_to_int(reaction) -> int:
     return EMOJI_LIST.index(str(reaction))
