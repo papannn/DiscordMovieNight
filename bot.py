@@ -94,9 +94,16 @@ async def on_reaction_add(reaction, user):
             await user.send("You put the wrong value! Please use the number value")
             return
 
-        server_id = users_active[user.id]['server_active_list'][0]
+        server_active_list = users_active[user.id]['server_active_list']
+        server_id = server_active_list[0]
         channel_id = server_active[server_id]['channel_id']
         channel = client.get_channel(channel_id)
+        server_active[server_id]['total_voters'] += 1
+        
+        server_voting_dict = server_active[server_id]
+        server_active_list.pop(0)
+        if len(server_active_list) == 0:
+            users_active.pop(user.id)
         await user.send("Thank you for voting")
         await channel.send("%s has voted" % (user.name))
 client.run(TOKEN)
