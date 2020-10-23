@@ -55,6 +55,21 @@ def delete_active_state(guild_id):
             pass
     del server_active[guild_id]
 
+def get_user_with_movie_king_role(user_list):
+    for user in user_list:
+        for role in user.roles:
+            if role.name == 'Movie King / Queen':
+                return user
+    return None
+
+def get_intro_text(mention_user, movie_king_user):
+    if mention_user == movie_king_user:
+        return "Bisakah <@%s> mempertahankan Tahta Movie King / Queen?" % mention_user.id
+    elif movie_king_user == None:
+        return "Bisakah <@%s> mendapatkan tahta Movie King / Queen?" % mention_user.id
+    else:
+        return "Bisakah <@%s> mencuri tahta Movie King / Queen dari <@%s>?" % (mention_user.id, movie_king_user.id)
+
 @client.event
 async def on_ready():
     print(f'{client.user} has connected to Discord!')
@@ -108,8 +123,10 @@ async def on_message(message):
             await message.channel.send("Eh?")
             await message.channel.send("Nobody voted yet?")
             final_point = 0
-
         
+        movie_king_user = get_user_with_movie_king_role(message.guild.members)
+        mention_user = server_active[guild_id]['mention_person']
+        await message.channel.send(get_intro_text(mention_user, movie_king_user))
         await message.channel.send("%s Points!!!" % final_point)
         if final_point > 7.5:
             await message.channel.send("Congratulation!")
