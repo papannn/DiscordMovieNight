@@ -77,7 +77,7 @@ async def on_message(message):
         channel_id = message.channel.id
         server_active[guild_id] = {
             'total_points': 0,
-            'total_voters:': 0,
+            'total_voters': 0,
             'channel_id': channel_id
         }
         add_members_to_active_state(user_movie_watcher, guild_id, users_active)
@@ -88,9 +88,12 @@ async def on_message(message):
 async def on_reaction_add(reaction, user):
     if client.user != user:
         if users_active.get(user.id, None) is None:
-            await user.send("Sorry, the voting has ended")
+            await user.send("Sorry, you already voted / the voting has ended")
             return
-        
+        if str(reaction) not in EMOJI_LIST:
+            await user.send("You put the wrong value! Please use the number value")
+            return
+
         server_id = users_active[user.id]['server_active_list'][0]
         channel_id = server_active[server_id]['channel_id']
         channel = client.get_channel(channel_id)
