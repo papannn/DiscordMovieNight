@@ -128,10 +128,17 @@ async def on_message(message):
         mention_user = server_active[guild_id]['mention_person']
         await message.channel.send(get_intro_text(mention_user, movie_king_user))
         await message.channel.send("%s Points!!!" % final_point)
+        role = discord.utils.get(message.guild.roles, name='Movie King / Queen')
         if final_point > 7.5:
+            if movie_king_user != None and movie_king_user != mention_user:
+                await movie_king_user.remove_roles(role)
+            await mention_user.add_roles(role)
+
             await message.channel.send("Congratulation!")
         else:
             await message.channel.send("Better luck next time :(")
+            if movie_king_user == mention_user:
+                await movie_king_user.remove_roles(role)
         delete_active_state(guild_id)
 
 def reaction_to_int(reaction) -> int:
