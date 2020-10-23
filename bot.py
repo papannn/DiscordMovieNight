@@ -6,7 +6,8 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-client = discord.Client()
+intents = discord.Intents.all()
+client = discord.Client(intents=intents)
 
 def check_roles(user_roles: list) -> bool:
     for role in user_roles:
@@ -38,6 +39,5 @@ async def on_message(message):
         if not check_roles(user_roles):
             await message.channel.send("This person doesn't have \"Movie Watcher\" role")
             return
-
-
+        
 client.run(TOKEN)
