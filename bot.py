@@ -8,6 +8,12 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 client = discord.Client()
 
+def check_roles(user_roles: list) -> bool:
+    for role in user_roles:
+        if role.name == 'Movie Watcher':
+            return True
+    return False
+
 @client.event
 async def on_ready():
     print(f'{client.user} has connected to Discord!')
@@ -25,5 +31,13 @@ async def on_message(message):
         elif len(mentions) > 1:
             await message.channel.send("Please mention 1 person only!")
             return
+
+        mention_person = mentions[0]
+        user_roles = mention_person.roles
+        
+        if not check_roles(user_roles):
+            await message.channel.send("This person doesn't have \"Movie Watcher\" role")
+            return
+
 
 client.run(TOKEN)
