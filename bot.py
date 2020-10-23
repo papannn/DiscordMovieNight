@@ -46,6 +46,15 @@ def add_members_to_active_state(user_list, guild_id, users_active):
                 'server_active_list': [guild_id]
             }
 
+def delete_active_state(guild_id):
+    users = server_active[guild_id]['user_list']
+    for user in users:
+        try:
+            del users_active[user.id]
+        except KeyError:
+            pass
+    del server_active[guild_id]
+
 @client.event
 async def on_ready():
     print(f'{client.user} has connected to Discord!')
@@ -94,14 +103,15 @@ async def on_message(message):
         voting_stats = server_active[guild_id]
         final_point = voting_stats['total_points'] / voting_stats['total_voters']
         
-        await message.channel.send("Point %s!!!" % final_point)
+        await message.channel.send("%s Points!!!" % final_point)
         if final_point > 7.5:
             await message.channel.send("Congratulation!")
         else:
             await message.channel.send("Better luck next time :(")
+        delete_active_state(guild_id)
 
 def reaction_to_int(reaction) -> int:
-    return EMOJI_LIST.index(str(reaction))
+    return EMOJI_LIST.index(str(reaction)) + 1
 
 @client.event
 async def on_reaction_add(reaction, user):
