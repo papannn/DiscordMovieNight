@@ -68,4 +68,9 @@ async def on_message(message):
         await message.channel.send("Attention Movie Watcher, please check your personal messages")
         await pm_all_user(user_movie_watcher)
 
+@client.event
+async def on_reaction_add(reaction, user):
+    if client.user != user:
+        await user.send("Thank you for voting")
+
 client.run(TOKEN)
