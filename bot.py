@@ -9,6 +9,9 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 
+server_active = {}
+users_active = {}
+
 def check_roles(user_roles: list) -> bool:
     for role in user_roles:
         if role.name == 'Movie Watcher':
@@ -39,6 +42,17 @@ async def pm_all_user(user_list):
         await movie_score.add_reaction("9️⃣")
         await movie_score.add_reaction("🔟")
 
+def add_members_to_active_state(user_list, guild_id, users_active):
+    for user in user_list:
+        if users_active.get(user.id, None) is not None:
+            users_active[user.id]['server_active_count'] += 1
+            users_active[user.id]['server_active_list'].append(guild_id)
+        else:
+            users_active[user.id] = {
+                'server_active_count': 1,
+                'server_active_list': [guild_id]
+            }
+
 @client.event
 async def on_ready():
     print(f'{client.user} has connected to Discord!')
@@ -65,6 +79,15 @@ async def on_message(message):
             return
 
         user_movie_watcher = filter_user_with_movie_watcher_role(message.guild.members, mention_person)
+        
+        guild_id = message.guild.id
+        server_active[guild_id] = {
+            'total_points': 0,
+            'total_voters:': 0
+        }
+        add_members_to_active_state(user_movie_watcher, guild_id, users_active)
+        print(server_active)
+        print(users_active)
         await message.channel.send("Attention Movie Watcher, please check your personal messages")
         await pm_all_user(user_movie_watcher)
 
