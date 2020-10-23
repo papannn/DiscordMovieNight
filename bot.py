@@ -86,8 +86,6 @@ async def on_message(message):
             'total_voters:': 0
         }
         add_members_to_active_state(user_movie_watcher, guild_id, users_active)
-        print(server_active)
-        print(users_active)
         await message.channel.send("Attention Movie Watcher, please check your personal messages")
         await pm_all_user(user_movie_watcher)
 
