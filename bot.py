@@ -27,7 +27,17 @@ def filter_user_with_movie_watcher_role(user_list, mention_person):
 
 async def pm_all_user(user_list):
     for user in user_list:
-        await user.send("How's the movie? Gimme score from 1 to 10")
+        movie_score = await user.send("How's the movie? Gimme score from 1 to 10")
+        await movie_score.add_reaction("1️⃣")
+        await movie_score.add_reaction("2️⃣")
+        await movie_score.add_reaction("3️⃣")
+        await movie_score.add_reaction("4️⃣")
+        await movie_score.add_reaction("5️⃣")
+        await movie_score.add_reaction("6️⃣")
+        await movie_score.add_reaction("7️⃣")
+        await movie_score.add_reaction("8️⃣")
+        await movie_score.add_reaction("9️⃣")
+        await movie_score.add_reaction("🔟")
 
 @client.event
 async def on_ready():
