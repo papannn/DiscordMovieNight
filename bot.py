@@ -87,6 +87,10 @@ async def on_message(message):
         elif len(mentions) > 1:
             await message.channel.send("Please mention 1 person only!")
             return
+        guild_id = message.guild.id
+        if server_active.get(guild_id, None) is not None:
+            await message.channel.send("There's active voting on this server")
+            return
 
         mention_person = mentions[0]
         user_roles = mention_person.roles
@@ -97,7 +101,7 @@ async def on_message(message):
 
         user_movie_watcher = filter_user_with_movie_watcher_role(message.guild.members, mention_person)
         
-        guild_id = message.guild.id
+        
         channel_id = message.channel.id
         server_active[guild_id] = {
             'total_points': 0,
