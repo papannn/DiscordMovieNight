@@ -152,10 +152,16 @@ def reaction_to_int(reaction) -> int:
 async def on_reaction_add(reaction, user):
     if client.user != user:
         if users_active.get(user.id, None) is None:
-            await user.send("Sorry, you already voted / the voting has ended")
+            try:
+                await user.send("Sorry, you already voted / the voting has ended")
+            except Exception as e:
+                print(e)
             return
         if str(reaction) not in EMOJI_LIST:
-            await user.send("You put the wrong value! Please use the number value")
+            try:
+                await user.send("You put the wrong value! Please use the number value")
+            except Exception as e:
+                print(e)
             return
 
         server_active_list = users_active[user.id]['server_active_list']
@@ -169,6 +175,9 @@ async def on_reaction_add(reaction, user):
         server_active_list.pop(0)
         if len(server_active_list) == 0:
             users_active.pop(user.id)
-        await user.send("Thank you for voting")
+        try:
+            await user.send("Thank you for voting")
+        except Exception as e:
+            print(e)
         await channel.send("%s has voted" % (user.name))
 client.run(TOKEN)
