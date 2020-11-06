@@ -151,6 +151,9 @@ def reaction_to_int(reaction) -> int:
 @client.event
 async def on_reaction_add(reaction, user):
     if client.user != user:
+        message = reaction.message
+        if not isinstance(message.channel, discord.channel.DMChannel):
+            return
         if users_active.get(user.id, None) is None:
             try:
                 await user.send("Sorry, you already voted / the voting has ended")
